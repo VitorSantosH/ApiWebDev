@@ -14,7 +14,7 @@ const logs = {
 
         try {
             const host = req.headers.host
-            const ipAdress = req.ip || req.connection.remoteAddress;
+            const ipAdress = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
             const IpMongo = await saveIps.create({
                 ipAdress: ipAdress,
                 host: host,
