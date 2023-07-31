@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 const http = require('http');
 const https = require('https');
 const app = express();
-const logs = require('./utilits/saveLog')
-const {routesUsers} = require("../src/utilits/newUser")
+const logs = require('./rotas/saveLog')
+const {routesUsers} = require("../src/rotas/newUser")
 
 
 /**
@@ -38,6 +38,7 @@ app.use(morgan('common'));
 app.use(logs.logIp);
 app.use("/user", routesUsers)
 app.use("/logs", logs.getLogs);
+app.use('/deleteLogs', logs.deleteLogs)
 app.use('/controler', express.static('dist'))
 app.use('/', express.static('dist'))
 const portHttp = 8080;
