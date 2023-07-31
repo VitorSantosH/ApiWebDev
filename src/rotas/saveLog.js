@@ -21,8 +21,6 @@ const logs = {
             const logExists = await saveIps.findOne({ ipAdress: ipAdress });
 
             if (logExists) {
-                console.log(logExists)
-
                 logExists.count++
                 logExists.save()
                     .then(res => {
@@ -79,7 +77,6 @@ const logs = {
 
     deleteLogs: async (req, res, next) => {
 
-        console.log(req.headers)
 
         if (!req.headers.authorization) {
             return res.send("Requisição incorreta")
