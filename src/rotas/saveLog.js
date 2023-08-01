@@ -21,6 +21,8 @@ const logs = {
             const logExists = await saveIps.findOne({ ipAdress: ipAdress });
 
             if (logExists) {
+
+
                 logExists.count++
                 logExists.save()
                     .then(res => {
