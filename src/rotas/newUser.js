@@ -49,14 +49,11 @@ const signin = async (req, res) => {
         return user
     })
 
-    console.log(usuario)
 
     if (!usuario) {
         return res.status(400).send("Usuário inválido")
     }
 
-
-    console.log(`${req.body.password}, ${usuario.password}`)
 
     const isMatch = await bcrypt.compare(req.body.password, usuario.password)
 
