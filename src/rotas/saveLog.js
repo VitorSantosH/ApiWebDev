@@ -26,10 +26,8 @@ const logs = {
                 logExists.count++
                 logExists.save()
                     .then(res => {
-                        console.log(res)
                     })
                     .catch(err => {
-                        console.log(err)
                     })
 
             } else {
@@ -45,7 +43,6 @@ const logs = {
 
 
         } catch (error) {
-            console.log(error)
         }
 
         next();
