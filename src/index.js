@@ -8,8 +8,7 @@ const https = require('https');
 const app = express();
 const logs = require('./rotas/saveLog')
 const {routesUsers} = require("../src/rotas/newUser")
-const config = require('./config/config')
-const axios = require('axios')
+const routesFgts = require('./rotas/fgts/fgtsRote');
 
 
 /**
@@ -43,87 +42,9 @@ app.use("/logs", logs.getLogs);
 app.use('/deleteLogs', logs.deleteLogs)
 app.use('/controler', express.static('dist'))
 app.use('/fgts', express.static('dist'))
+app.use('/fgts', routesFgts)
 app.use('/', express.static('dist'))
 
-// middleware para renovação do token
-app.use(async (req, res, next) => {
-
-    console.log('mid 1')
-
-    // Configurações da requisição
-    const AxiosConfig = {
-        headers: {
-            'Authorization': config.basicAuthString
-        }
-    };
-    const now = new Date();
-
-    if (!config.token || config.expiration <= now) {
-
-        console.log("Token expirado, gerando novo token....")
-
-        // Realizar a requisição GET com o header
-        const response = await axios.get(config.urlGetToken, AxiosConfig)
-            .then(response => {
-
-                console.log("Novo token gerado com sucesso")
-                console.log(response.data); // Dados da resposta do sistema externo
-
-
-                const expiration = new Date(now.getTime() + 3600 * 1000);
-
-
-                config.token = `Bearer ${response.data.token}`
-                config.expiration = expiration
-
-            })
-            .catch(error => {
-
-                console.error('Erro na requisição:', error);
-
-                return res.send(error)
-            });
-
-
-
-    }
-
-    next();
-
-})
-
-app.post('/fgts', async (req, res) => {
-
-
-    console.log(req.body)
-
-    console.log('mid 2')
-
-    const params = {
-        cpf: req.body.cpf
-    };
-    const headers = {
-        'Authorization': config.token,
-    };
-    const configParans = {
-        params,
-        headers
-    };
-
-    axios.get(config.urlGetSaldo, configParans)
-        .then(response => {
-            console.log(response.data);
-            return res.send(response.data)
-        })
-        .catch(error => {
-            console.error('Erro na requisição:', error);
-            return res.send(error)
-        });
-
-
-
-
-})
 
 
 

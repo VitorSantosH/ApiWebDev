@@ -7,6 +7,7 @@ config = {
     expiration: undefined,
     urlGetToken: 'https://webservice-homol.facta.com.br/gera-token',
     urlGetSaldo: "https://webservice-homol.facta.com.br/fgts/saldo",
+    urlGetTable: "https://webservice-homol.facta.com.br/fgts/calculo"
 }
 
 /**
