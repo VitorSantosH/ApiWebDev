@@ -8,7 +8,7 @@ const axios = require('axios');
 // middleware para renovação do token
 routesFgts.use(async (req, res, next) => {
 
-    console.log('Gerando token....')
+    console.log('Checando token....')
 
     // Configurações da requisição
     const AxiosConfig = {
@@ -17,6 +17,7 @@ routesFgts.use(async (req, res, next) => {
         }
     };
     const now = new Date();
+
 
     if (!config.token || config.expiration <= now) {
 
@@ -30,11 +31,12 @@ routesFgts.use(async (req, res, next) => {
                 console.log(response.data); // Dados da resposta do sistema externo
 
 
-                const expiration = new Date(now.getTime() + 36000 * 1000);
+                const expiration = new Date(now.getTime() + 600 * 1000);
 
 
                 config.token = `Bearer ${response.data.token}`
                 config.expiration = expiration
+              return  next();
 
             })
             .catch(error => {
@@ -46,9 +48,12 @@ routesFgts.use(async (req, res, next) => {
 
 
 
+    } else  {
+        console.log('token valido até ' + config.expiration)
+        return   next();
     }
-
-    next();
+   
+    
 
 })
 
@@ -74,7 +79,7 @@ routesFgts.post('/getTable', async (req, res) => {
 
     axios.post(config.urlGetTable, requestData, { headers: headers })
         .then(response => {
-            console.log(response.data);
+            console.log(response);
             return res.send(response.data)
         })
         .catch(error => {
