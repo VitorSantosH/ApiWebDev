@@ -31,12 +31,12 @@ routesFgts.use(async (req, res, next) => {
                 console.log(response.data); // Dados da resposta do sistema externo
 
 
-                const expiration = new Date(now.getTime() + 600 * 1000);
+                const expiration = new Date(now.getTime() + 3600 * 1000);
 
 
                 config.token = `Bearer ${response.data.token}`
                 config.expiration = expiration
-              return  next();
+                return next();
 
             })
             .catch(error => {
@@ -48,12 +48,12 @@ routesFgts.use(async (req, res, next) => {
 
 
 
-    } else  {
+    } else {
         console.log('token valido até ' + config.expiration)
-        return   next();
+        return next();
     }
-   
-    
+
+
 
 })
 
@@ -62,30 +62,58 @@ routesFgts.post('/getTable', async (req, res) => {
 
     console.log('getTable')
 
-    const requestData = JSON.stringify({
+    const dataTabelas = []
+    const tabelas = [
+        46205,
+        46183,
+        40789,
+        40770,
+        40762,
+        40797,
+        46230,
+        46213,
+        46191,
+    ]
+
+    const requestData_0 = JSON.stringify({
         cpf: req.body.params.cpf,
-        tabela: 46205,
-      //  taxa: 2.04,
+        //  tabela: 46205,
+        //  taxa: 2.04,
         parcelas: req.body.params.parcelas
     });
 
-  
+
 
     const headers = {
         'Authorization': config.token,
         'Content-Type': 'application/json'
     };
 
+    for (let index = 0; index < tabelas.length; index++) {
 
-    axios.post(config.urlGetTable, requestData, { headers: headers })
-        .then(response => {
-            console.log(response);
-            return res.send(response.data)
-        })
-        .catch(error => {
-            console.error('Erro na requisição:', error);
-            return res.send(error)
+        const requestData = JSON.stringify({
+            cpf: req.body.params.cpf,
+            tabela: tabelas[index],
+            //  taxa: 2.04,
+            parcelas: req.body.params.parcelas
         });
+
+        await axios.post(config.urlGetTable, requestData, { headers: headers })
+            .then(response => {
+                console.log(response.data)
+                return dataTabelas.push(response.data)
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                return dataTabelas.push(error)
+            });
+
+    }
+
+
+    return res.send(dataTabelas)
+
+
 
 })
 
