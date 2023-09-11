@@ -2,6 +2,8 @@ const express = require('express');
 const routesFgts = require('express').Router();
 const config = require('../../config/config')
 const axios = require('axios');
+const { authSecret } = require("../../.config/.secret.js");
+const jwt = require('jwt-simple')
 
 
 
@@ -120,6 +122,22 @@ routesFgts.post('/getTable', async (req, res) => {
 routesFgts.post('/saldo', async (req, res) => {
 
     console.log('mid 2')
+
+    const user = JSON.parse(req.body.id)
+    try {
+        
+        const decoded = jwt.decode(user.token, authSecret)
+
+    } catch (error) {
+
+        const err = {
+            erro: true,
+            tipo: 'ERRO',
+            msg: 'Não autorizado',
+        }
+
+        return res.send(err)
+    }
 
     const params = {
         cpf: req.body.cpf

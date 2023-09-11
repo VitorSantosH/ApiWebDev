@@ -12,7 +12,7 @@ const {authSecret} = require('../.config/.secret.js')
 const generateUser = async (req, res, next) => {
 
     const salt = await bcrypt.genSalt(10);
-    const email = req.body.email
+    const email = req.body.email;
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     const UserAlreadyExists = await Users.findOne({ email: email })
 
